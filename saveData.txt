@@ -1,0 +1,15 @@
+-Save Data-
+Cost per game:
+1
+
+Current picture index:
+4
+
+Max number of pictures:
+5
+
+bankroll balance, -1 for unlimited:
+-1
+
+Other players?:
+True

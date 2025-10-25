@@ -1,0 +1,9 @@
+from PIL import Image, ImageDraw, ImageFont
+
+draw.rectangle((0, 0, width, height), fill = (0, 0, 0))
+draw.rectangle((0, 0, width, 180), fill = (92, 155, 51))
+draw.rectangle((88.75, 46.25, 151.25, 133.75), fill = (100, 0, 0))
+
+_, _, textWith, textHeight = draw.textbbox((0, 0), menu[r][c], font=fnt)
+draw.text(((width-textWith)/2, height-textHeight - 20), menu[r][c], font=fnt, fill = (255, 255, 255))
+disp.image(image)

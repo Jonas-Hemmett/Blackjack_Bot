@@ -1,0 +1,298 @@
+import time
+import funAI as f1
+import test2
+import random
+# git commit -am "123" 
+# git push origin master 
+
+
+DS = 1 # Number of decks played with
+HS = 1 # Default number of hands
+LT = 21 # Card Value limit
+COST = 10
+SINGLE = True #more than 2 people in real game, treats other players as split hand
+
+class Person:
+    def __init__(self):
+        self.hand = [[] * HS]
+        self.hI = 0
+        # self.moves = 1 # -1 = can't make a move, 0 = for testing, 1 = unknown state, 2 = hitting, 3 = hitting or staying, 4 = doubling down, 5 = splitting, 6 = any,
+        self.moves = {}
+        self.value = [0]
+    
+    def calcMoves(self):
+        if self.value[self.hI] >= 21:
+            return True
+        else:
+            return False
+    
+    def roundStart(self):
+        for h in self.hand:
+            self.value.append(0)
+        self.hand = [[] * HS]
+        self.hI = 0
+        self.moves = {"hit":False, "stay":False, "dDown":False, "split":False, "sur": False}
+    
+    def hit(self, card):
+        self.addCard(card)
+
+    def stay(self):
+        return True #old, -1
+
+    def clearHand(self):
+        self.hand = [[] * HS]
+        self.value = 0
+        
+    def addCard(self, card):
+        self.hand[self.hI].append(card)
+        self.value[self.hI] += card
+
+        # Not very efficient but works with splitting
+        for ace in self.hand[self.hI]:
+            if ace == 1 and self.value[self.hI] + 10 <= LT:
+                ace = 11 
+                self.value[self.hI] += 10
+            
+            if ace == 11 and self.value[self.hI] > LT:
+                ace == 1
+                self.value[self.hI] -= 10
+        
+        self.moves = 1
+        #return 1 #used to be 1
+        if self.value[self.hI] >= 21: 
+            return True 
+        else: 
+            return False
+
+class Player(Person):
+    def __init__(self):
+        Person.__init__(self)
+        self.bankroll = 1000
+        self.payout = 1
+        self.cost = 0
+
+    def roundStart(self, cost):
+        self.payout = 1
+        self.cost=  cost
+        self.bankroll -= cost * self.payout
+        Person.roundStart(self)
+
+    """
+    def calcMoves(self):
+        if self.moves > 0: # Checks if person can make a move
+            if self.value[self.hI] >= LT:
+                print("Staying1")
+                self.stay()
+            else:
+                if len(self.hand[self.hI]) == 2: # Checks if person can split and or double down
+                    if self.hand[self.hI][0] == self.hand[self.hI][1] or (self.hand[self.hI][0] == (1 or 11) and self.hand[self.hI][1] == (1 or 11)):
+                        self.moves = 6 if self.bankroll >= COST else 5 # Lets person can split and or double down
+                    else:
+                        self.moves = 4 # Lets person double down 
+                elif len(self.hand[self.hI]) < 2 and self.bankroll >= COST:
+                    self.moves = 4
+                else:
+                    self.moves = 6 # Lets person can hit or stay
+        return self.moves
+    """
+    def calcMoves(self):
+        if Person.calcMoves(self):
+            return True
+
+        if len(self.hand[self.hI]) == 2:
+            self.moves["dDown"] = True if self.bankroll >= self.cost else False
+           
+            self.moves["split"] = True if (self.hand[self.hI][0] == self.hand[self.hI][1] or (self.hand[self.hI][0] == (1 or 11) and self.hand[self.hI][1] == (1 or 11))) else False
+            
+            self.moves["sur"] = True if len(self.hand) <= HS else False
+        self.moves["hit"] = True
+
+        self.moves["stay"] = True
+
+        return False
+        
+
+    def split(self):
+        self.value[self.hI] -= self.hand[self.hI][-1]
+        self.hand.append([self.hand[self.hI].pop()])
+        self.moves = 1
+        return 1
+
+    def dDown(self):
+        self.bankroll -= COST
+        self.payout = 2
+        self.hit()
+        self.stay()
+
+    def sur(self):
+        self.payout = 0.5
+        self.stay()
+
+class Dealer(Person):
+    def __init__(self):
+        Person.__init__(self)
+        self.hiddenCard = []
+
+    def reveal(self):
+        self.hand[self.hI][1] = self.hiddenCard.pop(self.hI)
+
+    # def calcMoves(self):
+    #     if self.moves > 0: # Checks if person can make a move
+    #         if self.value[self.hI] >= LT:
+    #             self.stay()
+    #         else:
+    #             self.moves = 2 if self.value[self.hI] <= 16 else 3
+    #     return self.moves
+    def calcMoves(self):
+        if Person.calcMoves(self):
+            return True
+
+        # if self.hiddenCard[self.hI]:
+        #     self.reveal()
+        self.moves["stay"] = False if self.value[self.hI] <= 16 else True
+        self.moves["hit"] = True
+        return False
+
+    def addCard(self, card):
+        # Hides and unhides cards
+        if len(self.hand[self.hI]) == 1:
+            self.hiddenCard.insert(self.hI, card)
+            self.hand[self.hI].append(0)
+        else:
+            if len(self.hand[self.hI]) == 2 and self.hiddenCard and self.hiddenCard[self.hI]:
+                self.reveal()
+                
+            super().addCard(card)
+            self.value[self.hI] += card
+        return True #used to be 1
+
+class User(Player):
+    def __init__(self):
+        Player.__init__(self)
+
+class DeckSim():
+    def __init__(self):
+        self.deck = []
+    
+    def createDeck(self):
+        deck = []
+
+        for w in range(DS):
+            for x in range(1, 4 + 1):
+                for y in range(1, 10 + 1):
+                    deck.append(y)
+                for y in range(1, 3 + 1):
+                    deck.append(10)
+        
+        random.shuffle(deck)
+        return deck
+    
+    def deal(self):
+        if not self.deck:
+            self.deck = self.createDeck()
+
+        return self.deck.pop()
+
+class RoundSim():
+    def __init__(self, deck, players, cost):
+        self.deck = deck
+        self.cost = cost
+        self.players = players
+    
+    def playRound(self):
+        for p in self.players:
+            if isinstance(p, Player):
+                if p.bankroll >= self.cost:
+                    p.roundStart(self.cost)
+                else:
+                    p.stay()
+                    print("Nah")
+                    continue
+            elif isinstance(p, Dealer):
+                p.roundStart()
+                
+            for x in range(2):
+                for y in range(HS): 
+                    p.hI = y
+                    p.addCard(self.deck.deal())
+    
+        testc = -1
+        
+        for p in self.players:
+            testc += 1
+            print("New Player")
+
+            #h=0, l = 1
+            #h=1, l=2 split OR h=1 l=1 non and stop
+            h = 0
+            # if p.moves > 0:
+            #     moves = p.calcMoves()
+            moves = p.calcMoves()
+            while True: # Each hand
+                # if moves == -1:
+                #     h += 1
+                #     break
+                # elif moves == 1:
+                #     moves = p.calcMoves()
+                if moves:
+                    break
+    
+                if len(p.hand[h]) < h:
+                    break
+
+                print(p.hand[h])
+
+                p.hI = h
+                if isinstance(p, Dealer):
+                    print(p.hand[h])
+                    p.reveal()
+
+                while True: #Looping through hand
+                    moves = p.calcMoves()
+                    if moves:
+                        break
+                    # if moves == -1:
+                    #     break
+                    # elif moves == 1:
+                    #     moves = p.calcMoves()
+                    print(f"H: {h}")
+
+                    print(f"hand: {p.hand[h]}")
+
+                    print("player num: ", testc)
+                    
+                    if isinstance(p, Dealer) or True: #Remove or true, used to test
+                        print("-1 = can't make a move, 0 = for testing, 1 = unknown state, 2 = hit, 3 = stay, 4 = doubling down, 5 = splitting")
+
+                        testi = input(": move: ")
+
+                    if testi == "2":
+                        print("added")
+                        moves = p.addCard(self.deck.deal())
+                    elif testi == "3":
+                        moves = p.stay()
+                    elif testi == "4":
+                        moves = p.dDown(self.deck.deal())
+                    elif testi == "5":
+                        moves = p.split()
+                    
+                    print(f"Hand2: {p.hand[h]}")
+
+                    print("End")  
+
+                    if moves:
+                        break          
+
+class GameSim():
+    def __init__(self, players, cost):
+        self.deck = DeckSim()
+        self.cost = cost
+        self.round = RoundSim(self.deck, players, cost)
+        self.players = players
+    
+    def newGame(self):
+        self.deck.createDeck()
+
+        while True:
+            self.round.playRound()
+            break
