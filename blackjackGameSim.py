@@ -198,7 +198,8 @@ class GameSim():
             for p in playersIn:
                 if isinstance(p, pl.Player):
                     for v2 in p.getVals() :
-                        print(f"v2: {v2}, dealerVal: {dealerVal}")
+                        # if self.prints:
+                        #     print(f"v2: {v2}, dealerVal: {dealerVal}") ifPrints
                         if dealerVal > LT:
                             if v2 <= LT:
                                 p.bankroll += p.cost * p.payout

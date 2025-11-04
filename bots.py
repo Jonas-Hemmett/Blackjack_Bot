@@ -212,7 +212,7 @@ class BotBrain(pl.Player):
 
     # Buys in for a round
     def buyIn(self):
-        print(f"bankroll: {self.bankroll}. Cost: {self.cost}")
+        # print(f"bankroll: {self.bankroll}. Cost: {self.cost}")
         if self.bankroll >= self.cost:
             self.bankroll -= self.cost
             return self.cost

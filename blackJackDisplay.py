@@ -1,6 +1,7 @@
 from DisplayBase import *
 import openAIFunctions as f1
 
+print("current")
 # Lets the program be run on the Pi without a camera
 try:
     from picamera2 import Picamera2
@@ -125,18 +126,24 @@ def menuMegaMind(menu, loopCode):
     
 
 # Displays saved photos
-def dispPic(rc):
+def dispPic(rc, ):
+    picIndex = -1
     try:
-        if rc["r"] == 0 and rc["c"] == 0:
-            picIndex = int(BotIrlBrain.readSave([5])[0])
+        if rc["r"] == 0:
+            if rc["c"] == 0:
+                picIndex = int(BotIrlBrain.readSave([5])[0])
+            else:
+                picIndex = rc['c'] - 1
+        if picIndex == - 1:
+            draw.rectangle((0, 0, width, height - 60), fill = (0, 0, 0))
         else:
-            picIndex = rc['c'] - 1
-        picIn = Image.open(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg").convert('RGB').crop((0, 0, width, height - 60))
-        image.paste(picIn, (0, 0))
+            picIn = Image.open(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg").convert('RGB').crop((0, 0, width, height - 60))
+            image.paste(picIn, (0, 0))
+
     except  Exception as e:
         print(e)
         if rc["r"] == 0:
-            draw.rectangle((0, 0, width, height - 60), fill = (0, 0, 0))
+            draw.rectangle((0, 0, width, height - 60), fill = (92, 155, 51))
 
             _, _, textWidth, textHeight = draw.textbbox((0, 0), "None", font=fnt2)
             draw.text(((width-textWidth)/2, (height-textHeight - 20) / 2), "None", font=fnt2, fill = (255, 255, 255))
@@ -477,22 +484,24 @@ def picMoves():
     print("picMoves")
     bot.hardReset()
 
-    if isCam:
+    try:
         menu = [[["Most Recent"]], [["Manual Input"]], [["Exit"]]]
 
         high = int(BotIrlBrain.readSave([8])[0])
 
         for x in range(high + 1):
             menu[0].append([f"pic{x}"])
-    else:
+    
+    except Exception as e:
+        print (e)
         menu = [[["Manual Input"]], [["Exit"]]]
 
-    
+    print(menu)
     val = ""
 
     while True:
         draw.rectangle((0, 0, width, height - 60), fill = (92, 155, 51))
-        disp.image(image)
+        # disp.image(image)
 
         if val == "Exit":
             return "mainMenu()"
@@ -545,8 +554,8 @@ def picMoves():
         draw.text(((width-textWidth)/2, (height-textHeight - 20) / 2), move, font=fnt, fill = (255, 255, 255))
 
         disp.image(image)
-        input("next")
-        
+    menuMegaMind([[["Continue"]]], "")
+
 def mainMenu():
     if isCam:
         menu = [[["Exit"]], [["Camera"]], [["Pic Moves"]], [["Game"]]]
@@ -620,6 +629,7 @@ def inputTest():
             freshCamIn = False
 
         val = menuMegaMind(menu, "")
+        return
     
 
 def launch():
@@ -642,7 +652,10 @@ def launch():
                     elif outP == "EXIT":
                         break
                     else:
-                        outP = exec(outP)
+                        try:
+                            outP = exec(outP)
+                        except Exception as e:
+                            print(f"{outP} could not be run, error: {e})")
                     crashes = 0
                 except Exception as e: 
                     print(f"Crash {crashes}/10. Error: {e}")

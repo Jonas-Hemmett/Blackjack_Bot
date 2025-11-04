@@ -68,7 +68,7 @@ class Person:
         self.value = [0]
         
     def addCard(self, card):
-        print(f"hI: {self.hI}")
+        # print(f"hI: {self.hI}") ifPrint
         self.hand[self.hI].append(card)
         self.value[self.hI] += card
 
