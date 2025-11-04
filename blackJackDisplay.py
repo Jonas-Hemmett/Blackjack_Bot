@@ -127,6 +127,8 @@ def menuMegaMind(menu, loopCode):
 
 # Displays saved photos
 def dispPic(rc, ):
+    draw.rectangle((0, 0, width, height - 60), fill = (92, 155, 51))
+
     picIndex = -1
     try:
         if rc["r"] == 0:
@@ -135,7 +137,7 @@ def dispPic(rc, ):
             else:
                 picIndex = rc['c'] - 1
         if picIndex == - 1:
-            draw.rectangle((0, 0, width, height - 60), fill = (0, 0, 0))
+            pass
         else:
             picIn = Image.open(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg").convert('RGB').crop((0, 0, width, height - 60))
             image.paste(picIn, (0, 0))
@@ -143,7 +145,6 @@ def dispPic(rc, ):
     except  Exception as e:
         print(e)
         if rc["r"] == 0:
-            draw.rectangle((0, 0, width, height - 60), fill = (92, 155, 51))
 
             _, _, textWidth, textHeight = draw.textbbox((0, 0), "None", font=fnt2)
             draw.text(((width-textWidth)/2, (height-textHeight - 20) / 2), "None", font=fnt2, fill = (255, 255, 255))
@@ -525,16 +526,25 @@ def picMoves():
         
 
     else:
-        picIn = Image.open(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg").convert("RGB").crop((0, 0, width, height - 60))
+        #DEBUG
+        f1.client = f1.keyRead()
+        res = f1.analyzeImage(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg")
+        print("analyzeImage type:", type(res))
+        converted = bot.convertAnalyze(res)
+        print("convertAnalyze type:", type(converted))
+
+
+        picIn = Image.open(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg").convert("RGB")
         # picIn = Image.open(f"../hand2Crop.jpg").convert("RGB")
         image.paste(picIn, (0, 0))
         disp.image(image)
         f1.client = f1.keyRead()
-        players = bot.convertAnalyze(f1.analyzeImage(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg")).crop((0, 0, width, height - 60))
+        players = bot.convertAnalyze(f1.analyzeImage(f"/home/pi/CS2210/Blackjack/pic{picIndex}.jpg"))
+        print(f"Players: {players}")
         # players = bot.convertAnalyze(f1.analyzeImage("../hand2.jpg"))
     
     print(f"players: {players}")
-    bot.assignAnalyze(players)
+    bot.assignAnalyze(players)  
     print(bot.getHands())
     #handindex
     for i in range(len(bot.getHands())):
@@ -628,8 +638,8 @@ def inputTest():
             disp.image(image)
             freshCamIn = False
 
-        val = menuMegaMind(menu, "")
-        return
+        # val = menuMegaMind(menu, "")
+        
     
 
 def launch():

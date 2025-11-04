@@ -452,15 +452,15 @@ class BotIrlBrain(BotBrain):
                 print(f"Invalid Characters: {inval}")
 
             if "E" in inf:
-                print("AI gave error")
+                print("AI Could not read image")
 
             # If playing against the dealer, other player's hands are treated as the bot's split hands
             if not OTHER_PLAYERS:
                 inf = inf.replace("p", "u")
             
             # Splits for each player
-            inf = inf.split("\n") 
             inf = inf.replace("\n", "|")
+
             inf = inf.split("|") 
 
             for l1 in inf: 
