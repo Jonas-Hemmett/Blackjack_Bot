@@ -40,6 +40,9 @@ Because this project is made up of so many parts, I used composition and inherit
 # Image Recognition
 In order to determine what cards are present on the table, an image of the table has to be viewed. Although computers are far better at the analytical side of blackjack, image recognition remains deceptively challenging. Like many problems in life, this one can be solved with ChatGPT.  Using the OpenAI API for Python, I upload an image to their servers, ChatGPT analyzes the image and returns a list of the cards it sees and who has them. However input validation is needed as factors like blurry images and covered cards can lead to incorrect outputs.
 
+Due to the high cost of image processing, user input is required to take a picture.
+
+
 # Next Steps
 The next feature I want to add is an improved version of card counting. Traditional card counting assigns a score to each card (count), the running count determines the optimal bet size. My method would be broken into 3 parts based on the size of the remaining deck. 
 
