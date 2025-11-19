@@ -1,6 +1,7 @@
 from DisplayBase import *
 import openAIFunctions as f1
 
+# learn.adafruit.com/raspberry-pi-pygame-ui-basic
 print("current")
 # Lets the program be run on the Pi without a camera
 try:
@@ -10,8 +11,11 @@ try:
     camTest.close()
 except:
     isCam = False
+    print("No Camera")
+
 else:
     isCam = True
+
 
 from time import sleep
 import time
@@ -112,10 +116,11 @@ def menuMegaMind(menu, loopCode):
                 rc["c"] = 0
                 rc = menuMind(menu, rc)
                 break
+            # python-evdev.readthedocs.io/en/latest/tutorial.html
 
+         
             if button_A.value:
                 aAllow = True
-
             # Returns the current row and column which corresponds to a menu option
             elif aAllow:
                 return menu[rc["r"]][rc["c"]][1]
@@ -174,7 +179,7 @@ def dispHands(hands):
 # Plays games in real time
 def playGamePic():
     # Might want to change menu depending on bot type, like you don't need to wipe if no card coutning
-    menu = [[["Scan Cards"], ["Enter Cards Manually"]], [["View Cards"]], [["Exit"]]]
+    menu = [[["Scan Cards"], ["Enter Cards Manually"]], [["Buy In"]], [["View Cards"]], [["Exit"]]]
 
     if not isCam:
         menu.pop(0)
@@ -597,7 +602,6 @@ def inputTest():
     val = ""
 
     freshCamIn = True
-    # cam.configure(cam.create_preview_configuration(transform=Transform(rotation=90)))
 
     cam.start()
     sleep(0.5)
@@ -638,7 +642,7 @@ def inputTest():
             disp.image(image)
             freshCamIn = False
 
-        # val = menuMegaMind(menu, "")
+        val = menuMegaMind(menu, "")
         
     
 

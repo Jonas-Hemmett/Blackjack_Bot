@@ -4,7 +4,19 @@ from time import sleep
 
 width = 240
 height = 240
+
 from PIL import Image, ImageDraw, ImageFont
+
+# The newest version of Pillow forced x1 <= x2 for no good reason and I'm pissed it broke evyerthing. 
+# I copied this block from the web so this would boot. I shouldnt need it, but I do
+_old_rect = ImageDraw.ImageDraw.rectangle
+def _safe_rect(self, xy, *a, **kw):
+    x0, y0, x1, y1 = xy
+    if x1 < x0: x0, x1 = x1, x0
+    if y1 < y0: y0, y1 = y1, y0
+    return _old_rect(self, (x0, y0, x1, y1), *a, **kw)
+ImageDraw.ImageDraw.rectangle = _safe_rect
+
 image = Image.new("RGB", (width, height), (255, 255, 255))
 draw = ImageDraw.Draw(image)
 
@@ -28,6 +40,7 @@ def spin(var, t, inc):
     return(var * cos((pi / 2) * (inc / t)))
 
 def doSpin(times):
+    count = 0
     for _ in range(times):
         for inc in range(t):
             oAY = orY + (orY * 0.35 * -cos((pi * (inc)) / (2 * (t))))
@@ -37,7 +50,9 @@ def doSpin(times):
             draw.rectangle((orX - spin(x2, t, t - inc), oAY - y + 5, orX + spin(x2, t, t - inc), oAY + y - 5), fill = (100, 0, 0))
 
             # disp.image(image)
-            # image.show()
+            # if count % 5 and count <= 50:
+            #     image.show()
+            # count += 1
             sleep(0.01)
 
         for inc in range(t):
@@ -48,7 +63,9 @@ def doSpin(times):
             draw.rectangle((orX - spin(x2, t, inc), oAY - y + 5, orX + spin(x2, t, inc), oAY + y - 5), fill = (100, 0, 0))
 
             # disp.image(image)
-            # image.show()
+            # if count % 5 and count <= 50:
+            #     image.show()
+            # count += 1            
             sleep(0.01)
 
         #second side
@@ -67,7 +84,9 @@ def doSpin(times):
             draw.polygon(((orX + spin(x, t, t - inc) - spin(12.5, t, t - inc), oAY + 32.75), (orX + spin(x, t, t - inc) - spin(17.75, t, t - inc), oAY + 18.75), (orX + spin(x, t, t - inc) - spin(7.25, t, t - inc), oAY + 18.75)), fill = (255, 255, 255))
             draw.rectangle((orX + spin(x, t, t - inc) - spin(8.75, t, t - inc), oAY + 28, orX + spin(x, t, t - inc) - spin(16.25, t, t - inc), oAY + 28 - sqrt((4 ** 2) - (3.4 ** 2))), fill = (100, 0, 0))
             # disp.image(image)
-            # image.show()
+            # if count % 1 and count <= 10:
+            #     image.show()
+            # count += 1
             sleep(0.01)
 
         for inc in range(t):
@@ -85,8 +104,11 @@ def doSpin(times):
             draw.polygon(((orX + spin(x, t, inc) - spin(12.5, t, inc), oAY + 32.75), (orX + spin(x, t, inc) - spin(17.75, t, inc), oAY + 18.75), (orX + spin(x, t, inc) - spin(7.25, t, inc), oAY + 18.75)), fill = (255, 255, 255))
             draw.rectangle((orX + spin(x, t, inc) - spin(8.75, t, inc), oAY + 28, orX + spin(x, t, inc) - spin(16.25, t, inc), oAY + 28 - sqrt((4 ** 2) - (3.4 ** 2))), fill = (100, 0, 0))
             # disp.image(image)
-            # image.show()
+            if count <= 15:
+                image.show()
+            count += 1
             sleep(0.01)
 
 if __name__ == "__main__":
-    doSpin(10)
+    print("launched")
+    doSpin(1)
