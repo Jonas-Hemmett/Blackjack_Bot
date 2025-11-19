@@ -2,7 +2,10 @@ from DisplayBase import *
 import openAIFunctions as f1
 
 try:
-    import keyboard
+    import pygame
+    pygame.init()
+
+    pygame.display.set_mode((1, 1))    
     isKey= True
 except:
     isKey = False
@@ -122,9 +125,11 @@ def menuMegaMind(menu, loopCode):
                 break
 
             try:
-                if keyboard.is_pressed("up"):
-                    aAllow = True
-                    print("Keyboard pressed up")
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_UP:
+                            aAllow = True
+                            print("Keyboard pressed up")
             except:
                 pass
 
