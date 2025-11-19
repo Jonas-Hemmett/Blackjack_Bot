@@ -125,14 +125,15 @@ def menuMegaMind(menu, loopCode):
                 rc = menuMind(menu, rc)
                 break
 
-            try:
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_UP:
-                            aAllow = True
-                            print("Keyboard pressed up")
-            except:
-                pass
+            if isKey:
+                try:
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_UP:
+                                aAllow = True
+                                print("Keyboard pressed up")
+                except:
+                    pass
 
             if button_A.value:
                 aAllow = True
