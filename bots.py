@@ -769,7 +769,143 @@ class BotCountStratBrain(BotBasicStratBrain):
         
         self.players["p"].addCard(card)
 
- 
+class BotJonasStratBrain(BotCountStratBrain):
+    def __init__(self): 
+        BotCountStratBrain.__init__(self)
+    
+    def stand(self, userHand, dealerHand, deck):
+        return self.dealerScore(userHand, dealerHand, deck)
+
+    def hit(self, userHand, dealerHand, deck, memoVal=None):
+        if memoVal is None:
+            memoVal = {}
+
+        userVal = self.getVal()
+        dealerVal = self.getValTarget("d")
+
+        key = (tuple(sorted(userHand)), tuple(sorted(dealerHand)))
+
+        if key in memoVal:
+            return memoVal[key]
+        
+        if userVal > 21:
+            ev = -1
+            memoVal[key] = ev
+            return ev 
+        
+        if userVal == 21:
+            ev = self.stand(userHand, dealerHand, deck)
+            memoVal[key] = ev
+            return ev
+        
+        ev = 0
+        totalCards = sum(deck[card] for card in deck)
+
+        if totalCards == 0:
+            print("No cards")
+            totalCards = 1
+        for card in deck:
+            if deck[card][0]:            
+                userHandNew = userHand.copy()
+                userHandNew.append(card)
+
+                weight = deck[card][0] / totalCards
+                ev += self.hit(userHandNew, dealerHand, deck, memoVal) * weight
+        
+        standEv = self.stand(userHand, dealerHand, deck)
+        
+        # Make to pick standEv if standEv = hitEv
+        if ev > standEv:
+            memoVal[key] = ev
+            return ev
+        else:
+            memoVal[key] = standEv
+            return standEv
+
+    def split(self, userHand, dealerHand, deck):
+        if len(userHand) != 2 or userHand[0] != userHand[1]:
+            return -1
+
+        totalCards = sum(deck[card] for card in deck)
+        ev = 0
+
+
+        # like, hit atleast once
+        for card in deck:
+            if deck[card][0]:
+                userHandNew = [userHand[0], card]  
+                weight = deck[card][0] / totalCards
+                ev += weight * self.hit(userHandNew, dealerHand, deck)
+
+        return 2 * ev
+
+    def doubleDown(self, userHand, dealerHand, deck):
+        totalCards = sum(deck[card][0] for card in deck)
+        ev = 0
+
+        # like, hit atleast once
+        for card in deck:
+            if deck[card][0]:
+                weight = deck[card][0] / totalCards
+                userHandNew = userHand.copy()
+                userHandNew.append(card)
+                ev += weight * self.stand(userHandNew, dealerHand, deck)
+
+        return 2 * ev
+
+    def dealerScore(self, userHand, dealerHand, deck):
+        dealerVal =  self.getValTarget("d")
+
+        ev = 0
+        totalCards = sum(deck[card][0] for card in deck)
+        if totalCards == 0:
+            print("No cards")
+            totalCards = 1
+        
+        if dealerVal < 17:
+            for card in deck:
+                if deck[card]:            
+                    dealerHandNew = dealerHand.copy()
+                    dealerHandNew.append(card)
+
+                    weight = deck[card][0] / totalCards
+                    ev += self.dealerScore(userHand, dealerHandNew, deck) * weight
+
+            return ev
+                
+        userVal = self.getVal()
+
+        if userVal > 21:
+            return -1
+        if dealerVal > 21:
+            return 1
+        if userVal > dealerVal:
+            return 1
+        if userVal < dealerVal:
+            return -1
+        else:
+            return 0
+
+    def makeMove(self): 
+        bestEv = self.stand(self.getHand(), self.getHandTarget("d"), self.getCards())
+        move = "stay"
+
+        ev = self.hit(self.getHand(), self.getHandTarget("d"), self.getCards())
+        if ev > bestEv:
+            move = "hit"
+        
+        ev = self.doubleDown(self.getHand(), self.getHandTarget("d"), self.getCards())
+        if ev > bestEv:
+            move = "dDown"
+        
+        ev = self.split(self.getHand(), self.getHandTarget("d"), self.getCards())
+        if ev > bestEv:
+            move = "split"
+
+        return move
+
+        
+        
 class Bot1(BotBasicStratBrain, BotIrlBrain):
     def __init__(self): 
         BotBasicStratBrain.__init__(self)
