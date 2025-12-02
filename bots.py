@@ -769,21 +769,41 @@ class BotCountStratBrain(BotBasicStratBrain):
         
         self.players["p"].addCard(card)
 
+# I developed  this part seperatly, so some conversion is needed
 class BotJonasStratBrain(BotCountStratBrain):
     def __init__(self): 
         BotCountStratBrain.__init__(self)
+    def handSum(self, hand):
+        #TODO sort better, maybe
+        hand = sorted(hand, reverse = True)
+        valSum = 0
+        for card in hand:
+            if card != 1:
+                valSum += card
+            else:
+                if valSum + 11 > 21:
+                    valSum += 1
+                else:
+                    valSum += 11
+        
+        return valSum
     
-    def stand(self, userHand, dealerHand, deck):
-        return self.dealerScore(userHand, dealerHand, deck)
+    def formatDeck(self):
+        oldDeck = self.players["p"].getCards()
+        deck = {}
+        for card in oldDeck :
+            played, maxCount = oldDeck[card]
+            deck[card] = maxCount - played
+        return deck
+    def stand(self, userHand, dealerHand, deck, memoVal):
+        return self.dealerScore(userHand, dealerHand, deck, memoVal)
 
-    def hit(self, userHand, dealerHand, deck, memoVal=None):
-        if memoVal is None:
-            memoVal = {}
+    def hit(self, userHand, dealerHand, deck, memoVal):
 
-        userVal = self.getVal()
-        dealerVal = self.getValTarget("d")
+        userVal = self.handSum(userHand)
+        dealerVal = self.handSum(dealerHand)
 
-        key = (tuple(sorted(userHand)), tuple(sorted(dealerHand)))
+        key = (tuple(sorted(userHand)), tuple(sorted(dealerHand)), tuple(sorted(deck.items())))
 
         if key in memoVal:
             return memoVal[key]
@@ -794,7 +814,7 @@ class BotJonasStratBrain(BotCountStratBrain):
             return ev 
         
         if userVal == 21:
-            ev = self.stand(userHand, dealerHand, deck)
+            ev = self.stand(userHand, dealerHand, deck, memoVal)
             memoVal[key] = ev
             return ev
         
@@ -805,14 +825,15 @@ class BotJonasStratBrain(BotCountStratBrain):
             print("No cards")
             totalCards = 1
         for card in deck:
-            if deck[card][0]:            
-                userHandNew = userHand.copy()
-                userHandNew.append(card)
+            if deck[card]:  
+                weight = deck[card] / totalCards
+                deckNew = deck.copy()
+                deckNew[card]-= 1         
+                userHandNew = userHand + [card]
 
-                weight = deck[card][0] / totalCards
-                ev += self.hit(userHandNew, dealerHand, deck, memoVal) * weight
+                ev += self.hit(userHandNew, dealerHand, deckNew, memoVal) * weight
         
-        standEv = self.stand(userHand, dealerHand, deck)
+        standEv = self.stand(userHand, dealerHand, deck, memoVal)
         
         # Make to pick standEv if standEv = hitEv
         if ev > standEv:
@@ -822,7 +843,7 @@ class BotJonasStratBrain(BotCountStratBrain):
             memoVal[key] = standEv
             return standEv
 
-    def split(self, userHand, dealerHand, deck):
+    def split(self, userHand, dealerHand, deck, memoVal):
         if len(userHand) != 2 or userHand[0] != userHand[1]:
             return -1
 
@@ -832,78 +853,100 @@ class BotJonasStratBrain(BotCountStratBrain):
 
         # like, hit atleast once
         for card in deck:
-            if deck[card][0]:
+            if deck[card]:
+                weight = deck[card] / totalCards
+                deckNew = deck.copy()
+                deckNew[card] -= 1
                 userHandNew = [userHand[0], card]  
-                weight = deck[card][0] / totalCards
-                ev += weight * self.hit(userHandNew, dealerHand, deck)
+                ev += weight * self.hit(userHandNew, dealerHand, deckNew, memoVal)
+
 
         return 2 * ev
 
-    def doubleDown(self, userHand, dealerHand, deck):
-        totalCards = sum(deck[card][0] for card in deck)
+    def doubleDown(self, userHand, dealerHand, deck, memoVal):
+        totalCards = sum(deck[card] for card in deck)
         ev = 0
 
         # like, hit atleast once
         for card in deck:
-            if deck[card][0]:
-                weight = deck[card][0] / totalCards
-                userHandNew = userHand.copy()
-                userHandNew.append(card)
-                ev += weight * self.stand(userHandNew, dealerHand, deck)
+            if deck[card]:
+                weight = deck[card] / totalCards
+                deckNew = deck.copy()
+                deckNew[card] -= 1
+                userHandNew = userHand + [card]
+                ev += weight * self.stand(userHandNew, dealerHand, deckNew, memoVal)
 
         return 2 * ev
 
-    def dealerScore(self, userHand, dealerHand, deck):
-        dealerVal =  self.getValTarget("d")
+    def dealerScore(self, userHand, dealerHand, deck, memoVal):
+        if memoVal is None:
+            memoVal = {}
 
+        dealerVal =  self.handSum(dealerHand)
+        userVal = self.handSum(userHand)
+
+        key = (tuple(sorted(userHand)), tuple(sorted(dealerHand)), tuple(sorted(deck.items())))
+
+        if key in memoVal:
+            return memoVal[key]
         ev = 0
-        totalCards = sum(deck[card][0] for card in deck)
+        totalCards = sum(deck[card] for card in deck)
         if totalCards == 0:
             print("No cards")
             totalCards = 1
         
         if dealerVal < 17:
             for card in deck:
-                if deck[card]:            
-                    dealerHandNew = dealerHand.copy()
-                    dealerHandNew.append(card)
+                if deck[card]: 
+                    weight = deck[card]/ totalCards
+                    deckNew = deck.copy()
+                    deckNew[card] -= 1          
+                    dealerHandNew = dealerHand + [card]
 
-                    weight = deck[card][0] / totalCards
-                    ev += self.dealerScore(userHand, dealerHandNew, deck) * weight
+                    ev += self.dealerScore(userHand, dealerHandNew, deckNew, memoVal) * weight
 
             return ev
                 
-        userVal = self.getVal()
+        result = 0
 
         if userVal > 21:
-            return -1
+            result = -1
         if dealerVal > 21:
-            return 1
+            result = 1
         if userVal > dealerVal:
-            return 1
+            result = 1
         if userVal < dealerVal:
-            return -1
-        else:
-            return 0
+            result = -1
+        
+        memoVal[key] = result
+        return result
 
     def makeMove(self): 
-        bestEv = self.stand(self.getHand(), self.getHandTarget("d"), self.getCards())
+        user = self.getHand().copy()
+        dealer = self.getHandTarget("d").copy()
+        deck = self.formatDeck()
+        memo = {}
+
+
+        bestEv = self.stand(user, dealer, deck, memo)
         move = "stay"
 
-        ev = self.hit(self.getHand(), self.getHandTarget("d"), self.getCards())
+        ev = self.hit(user, dealer, deck, memo)
         if ev > bestEv:
             move = "hit"
+            bestEv = ev
         
-        ev = self.doubleDown(self.getHand(), self.getHandTarget("d"), self.getCards())
+        ev = self.doubleDown(user, dealer, deck, memo)
         if ev > bestEv:
             move = "dDown"
+            bestEv = ev
         
-        ev = self.split(self.getHand(), self.getHandTarget("d"), self.getCards())
+        ev = self.split(user, dealer, deck, memo)
         if ev > bestEv:
-            move = "split"
+            move = "split" 
+            bestEv = ev
 
         return move
-
         
         
 class Bot1(BotBasicStratBrain, BotIrlBrain):
@@ -1006,3 +1049,28 @@ class Bot3(BotCountStratBrain, BotSimBrain):
             return "stay"
 
 
+class Bot4(BotJonasStratBrain, BotSimBrain):
+    def __init__(self): 
+        super().__init__()
+
+    # def roundStart(self):
+    #     return BotCountStratBrain.roundStart(self)
+    
+    # def addO(self, ps, moves):     
+    #     for p in ps:
+    #         if p in self.players:
+    #             self.players[p].clear()
+    #             self.players[p].addHandOld(ps[p])
+    #             if p != "p":
+    #                 self.players["p"].addHandOld(ps[p])
+    #     self.moves = moves
+
+    def makeMove(self):
+        pMove = BotJonasStratBrain.makeMove(self)
+
+        print(self.moves)
+        if self.moves[pMove]:
+            return pMove
+        else:
+            print(f"Bot caught invalid move: {pMove}")
+            return "stay"
