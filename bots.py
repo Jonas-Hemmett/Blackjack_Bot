@@ -1,5 +1,6 @@
 import openAIFunctions as f1
 import playerBase as pl
+import copy
 
 DS = 1 # Number of decks played with
 HS = 1 # Default number of hands
@@ -855,7 +856,7 @@ class BotJonasStratBrain(BotCountStratBrain):
         for card in deck:
             if deck[card]:
                 weight = deck[card] / totalCards
-                deckNew = deck.copy()
+                deckNew = copy.deepcopy(deck)
                 deckNew[card] -= 1
                 userHandNew = [userHand[0], card]  
                 ev += weight * self.hit(userHandNew, dealerHand, deckNew, memoVal)
@@ -879,8 +880,6 @@ class BotJonasStratBrain(BotCountStratBrain):
         return 2 * ev
 
     def dealerScore(self, userHand, dealerHand, deck, memoVal):
-        if memoVal is None:
-            memoVal = {}
 
         dealerVal =  self.handSum(dealerHand)
         userVal = self.handSum(userHand)
