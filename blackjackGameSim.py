@@ -89,15 +89,13 @@ class GameSim():
         if self.prints:
             print(" " * 4, "Double Down")
 
-        p.bankroll -= self.cost
-        p.payout = 2
+        p.bankroll -= p.betAmount
         self.addCard(p)
         return False
 
     def sur(self, p):
         if self.prints:
             print(" " * 4, "sur")
-        p.payout = 0.5
         return False
 
     def makeMove(self, p):
@@ -198,42 +196,62 @@ class GameSim():
             for p in playersIn:
                 if isinstance(p, pl.Player):
                     for v2 in p.getVals() :
+                        print(" " * 4, f"betAmount: {p.betAmount}")
+                        print(" " * 4, f"Balance: {p.bankroll:.2f}")     
+
                         # if self.prints:
                         #     print(f"v2: {v2}, dealerVal: {dealerVal}") ifPrints
-                        if dealerVal > LT:
-                            if v2 <= LT:
-                                p.bankroll += 2 * p.cost * p.payout
-                                self.ratio[ratI]["wins"] += p.payout
+                        if (v2 > LT) or  (v2 < dealerVal and dealerVal <= LT):
+                            self.ratio[ratI]["losses"] += 1
                                 
-                                if self.prints:
-                                    print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")
-                            else:
-                                p.bankroll += p.cost * p.payout
+                            if self.prints:
+                                print(" " * 4, f"{str(type(p))[8:-2]} Lost, Balance: {p.bankroll:.2f}")     
+                        
+                        elif (v2 <= LT) and (v2 == dealerVal):
+                            p.bankroll += p.betAmount
+                            self.ratio[ratI]["ties"] += 1
+                            print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")     
 
-                                self.ratio[ratI]["ties"] += p.payout
-
-                                if self.prints:
-                                    print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")
                         else:
-                            if v2 > dealerVal and v2 <= LT:
-                                p.bankroll += 2 * p.cost * p.payout
-                                self.ratio[ratI]["wins"] += 2 * p.payout
-                                
-                                if self.prints:
-                                    print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")
+                            self.ratio[ratI]["wins"] += 1
+                            p.bankroll += 2 * p.betAmount
+                            print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")     
 
-                            elif v2 == dealerVal:
-                                p.bankroll += p.cost * p.payout
-                                self.ratio[ratI]["ties"] += 2 * p.payout
+
+                        # if dealerVal > LT:
+                        #     if v2 <= LT:
+                        #         p.bankroll += p.cost * p.payout
+                        #         self.ratio[ratI]["wins"] += p.payout
                                 
-                                if self.prints:
-                                    print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")
+                        #         if self.prints:
+                        #             print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")
+                        #     else:
+                        #         p.bankroll += p.cost * p.payout
+
+                        #         self.ratio[ratI]["ties"] += p.payout
+
+                        #         if self.prints:
+                        #             print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")
+                        # else:
+                        #     if v2 > dealerVal and v2 <= LT:
+                        #         p.bankroll += 2 * p.cost * p.payout
+                        #         self.ratio[ratI]["wins"] += 2 * p.payout
+                                
+                        #         if self.prints:
+                        #             print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")
+
+                        #     elif v2 == dealerVal:
+                        #         p.bankroll += p.cost * p.payout
+                        #         self.ratio[ratI]["ties"] += 2 * p.payout
+                                
+                        #         if self.prints:
+                        #             print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")
                             
-                            else:
-                                self.ratio[ratI]["losses"] += p.payout
+                        #     else:
+                        #         self.ratio[ratI]["losses"] += p.payout
 
-                                if self.prints:
-                                    print(" " * 4, f"{str(type(p))[8:-2]} Lost, Balance: {p.bankroll:.2f}")
+                        #         if self.prints:
+                        #             print(" " * 4, f"{str(type(p))[8:-2]} Lost, Balance: {p.bankroll:.2f}")
                     ratI += 1
 
         return self.players, self.ratio
