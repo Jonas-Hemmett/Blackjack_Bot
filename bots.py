@@ -174,6 +174,7 @@ class BotBrain(pl.Player):
     def reset(self):
         for p in self.players:
             self.players[p].clear()
+        self.payout = 1
 
     # Goes to the bot's card index, if it is out of range more cards are added
     def hIP(self, num):

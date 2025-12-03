@@ -89,7 +89,7 @@ class GameSim():
         if self.prints:
             print(" " * 4, "Double Down")
 
-        p.bankroll -= COST
+        p.bankroll -= self.cost
         p.payout = 2
         self.addCard(p)
         return False
@@ -202,27 +202,29 @@ class GameSim():
                         #     print(f"v2: {v2}, dealerVal: {dealerVal}") ifPrints
                         if dealerVal > LT:
                             if v2 <= LT:
-                                p.bankroll += p.cost * p.payout
+                                p.bankroll += 2 * p.cost * p.payout
                                 self.ratio[ratI]["wins"] += p.payout
                                 
                                 if self.prints:
                                     print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")
                             else:
+                                p.bankroll += p.cost * p.payout
+
                                 self.ratio[ratI]["ties"] += p.payout
 
                                 if self.prints:
                                     print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")
                         else:
                             if v2 > dealerVal and v2 <= LT:
-                                p.bankroll += p.cost * p.payout
-                                self.ratio[ratI]["wins"] += p.payout
+                                p.bankroll += 2 * p.cost * p.payout
+                                self.ratio[ratI]["wins"] += 2 * p.payout
                                 
                                 if self.prints:
                                     print(" " * 4, f"{str(type(p))[8:-2]} Won, Balance: {p.bankroll:.2f}")
 
                             elif v2 == dealerVal:
-                                p.bankroll += p.cost * (p.payout / 2)
-                                self.ratio[ratI]["ties"] += p.payout
+                                p.bankroll += p.cost * p.payout
+                                self.ratio[ratI]["ties"] += 2 * p.payout
                                 
                                 if self.prints:
                                     print(" " * 4, f"{str(type(p))[8:-2]} Tied, Balance: {p.bankroll:.2f}")
