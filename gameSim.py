@@ -2,8 +2,7 @@ import openAIFunctions as f1
 import bots as b
 import blackjackGameSim as game
 import playerBase as pl
-
-players = [b.Bot2(), pl.BotDealer()]
+players = [b.Bot4(), pl.BotDealer()]
 
 printOutput = True
 g = game.GameBotSim(players, 1, True)
