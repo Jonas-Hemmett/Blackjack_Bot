@@ -1,3 +1,5 @@
+# Bot programs
+
 import openAIFunctions as f1
 import playerBase as pl
 import copy
@@ -152,6 +154,7 @@ class BotBrain(pl.Player):
     def __init__(self):
         pl.Player.__init__(self)
         self.players = {"u": BotDeck(), "d": BotDeck()}
+        self.betAmount = 0
     
     # def buyInAmount(self, amount):
     #     if self.bankroll >= amount:
@@ -217,11 +220,15 @@ class BotBrain(pl.Player):
         # print(f"bankroll: {self.bankroll}. Cost: {self.cost}")
         if self.bankroll >= self.cost:
             self.bankroll -= self.cost
+
+            self.betAmount = self.cost
             return self.cost
         
         elif self.bankroll == -1:
+            self.betAmount = self.cost
             return self.cost
         else: 
+            self.betAmount = 0
             return 0
     
     def playRound(self):
@@ -521,7 +528,7 @@ class BotIrlBrain(BotBrain):
                 break
            
             print(f"recommended bet: {self.players['p'].getBet()}")
-            self.buyInAmount(int(input("Bet Amount:")))
+            self.betAmount(int(input("Bet Amount:")))
 
 
             while True:
@@ -725,17 +732,29 @@ class BotCountStratBrain(BotBasicStratBrain):
         bet = round(self.cost * bet, BROUND)
 
         if self.bankroll == -1:
+            self.betAmount = bet
             return bet
         
         else:
             if bet > self.bankroll:
                 if self.cost <= self.bankroll:
+
                     self.bankroll -= self.cost
+                    self.betAmount = self.cost
+
+
                     return self.cost
                 else:
+                    self.betAmount = 0
                     return 0
             else:
+                print(f"Pre bankroll: {self.bankroll} bet: {self.betAmount}")
+
                 self.bankroll -= bet
+
+                self.betAmount = bet
+                print(f"bankroll: {self.bankroll} bet: {self.betAmount}")
+
                 return bet
 
 
@@ -877,7 +896,7 @@ class BotJonasStratBrain(BotCountStratBrain):
                 deckNew[card] -= 1
                 userHandNew = userHand + [card]
                 ev += weight * self.stand(userHandNew, dealerHand, deckNew, memoVal)
-
+        
         return 2 * ev
 
     def dealerScore(self, userHand, dealerHand, deck, memoVal):
@@ -1064,7 +1083,9 @@ class Bot4(BotJonasStratBrain, BotSimBrain):
     #             if p != "p":
     #                 self.players["p"].addHandOld(ps[p])
     #     self.moves = moves
-
+    
+    def buyIn(self):
+        return BotCountStratBrain.buyIn(self)
     def makeMove(self):
         pMove = BotJonasStratBrain.makeMove(self)
 
