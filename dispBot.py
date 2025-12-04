@@ -1,3 +1,4 @@
+# Safely imports bot to be run the PI
 from bots import *
 class Bot4(BotBasicStratBrain, BotIrlBrain):
     def __init__(self): 

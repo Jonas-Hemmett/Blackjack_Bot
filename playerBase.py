@@ -1,3 +1,4 @@
+# Handles basic game logic. Holds base class for bots to inherit from
 
 DS = 1 # Number of decks played with
 HS = 1 # Default number of hands

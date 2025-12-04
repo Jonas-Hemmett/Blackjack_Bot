@@ -1,3 +1,6 @@
+
+# Card animation I made, modified to run safely on the Pi
+
 from math import pi, sin, cos, sqrt
 from DisplayBase import *
 from time import sleep

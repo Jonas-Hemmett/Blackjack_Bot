@@ -1,8 +1,9 @@
+# My new strategy
 deck = {}
 for i in range(1, 10):
     deck[i] = 4
 
-# deck[10] = 16
+deck[10] = 16
 
 def handSum(hand):
     #TODO sort better, maybe

@@ -1,3 +1,4 @@
+# Handles OpenAI API usage
 import base64
 from openai import OpenAI
 import io

@@ -1,3 +1,4 @@
+# Card animation I made
 from math import pi, sin, cos, sqrt
 from time import sleep
 # from dispTBase import *
