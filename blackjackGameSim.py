@@ -1,3 +1,5 @@
+# Handles simulations and local games
+
 import playerBase as pl
 import random
 import bots as b1
@@ -301,3 +303,34 @@ class GameBotSim(GameSim):
 
 
 #Fix gethands to show all hands or one hand
+
+if __name__ == "__main__":
+    players = [pl.User(), b1.Bot4(), pl.BotDealer()]
+
+    printOutput = True
+    g = GameBotSim(players, 1, True)
+
+    
+    while True:
+        try:
+            trackIndex = int(input("Player index to track: ")) 
+            assert trackIndex < len(players), "Player index out of range!"
+            assert trackIndex >= 0, "Player index out of range!"
+            break
+    
+        except AssertionError:
+            print("Invalid Player!")
+
+    while True:
+        try:
+            numGames = int(input("Number of games to simulate or 0 to exit: "))
+            if not numGames:
+                break
+
+            players = g.newGame(numGames)
+            
+            # for p in players[0]:
+            #     if isinstance(p, pl.Player):
+            #         print(p.bankroll)
+        except Exception as e:
+            print(e)

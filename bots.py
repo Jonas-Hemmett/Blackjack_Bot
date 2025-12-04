@@ -1,3 +1,5 @@
+# Bot programs
+
 import openAIFunctions as f1
 import playerBase as pl
 import copy

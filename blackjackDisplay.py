@@ -1,3 +1,5 @@
+# Core UI interface.
+
 from DisplayBase import *
 import openAIFunctions as f1
 

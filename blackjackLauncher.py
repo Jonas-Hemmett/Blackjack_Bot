@@ -1,9 +1,10 @@
+# Safely launches the Blackjack Bot Pi program
+
 import blackjackDisplay
 import os
 from DisplayBase import *
 import spinStable
 
-# Safely launches the blackjack program
 if __name__ == "__main__":
     print("Launcher!")
     menu = [[["Blackjack Bot"], ["Card Spin"]], [["Pi"], ["Reboot"], ["Shutdown"]]]
