@@ -7,11 +7,11 @@ def keyRead():
         try:
             with open("../key.txt", "r") as file:
                 next(file)
-
                 rawKey = file.read().strip()
                 
                 assert rawKey[0] == "s" and rawKey[1] == "k" and rawKey[2] == "-"
-        except:
+        except Exception as e:
+            print(f"keyRead file error: {e}")
             with open("/home/pi/CS2210/Blackjack/key.txt", "r") as file:
                 next(file)
 
@@ -94,6 +94,5 @@ def chat(input):
 
 
 if __name__ == "__main__":
-    input("test?")
     client = keyRead()
-    print(analyzeImage("hand2.jpg"))
+    print(analyzeImage("../hand2Crop.jpg"))

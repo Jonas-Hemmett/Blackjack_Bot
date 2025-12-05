@@ -1,6 +1,9 @@
 # Bot programs
 
-import openAIFunctions as f1
+try:
+    import openAIFunctions as f1
+except:
+    print("noAI")
 import playerBase as pl
 import copy
 
@@ -1068,7 +1071,7 @@ class Bot3(BotCountStratBrain, BotSimBrain):
             return "stay"
 
 
-class Bot4(BotJonasStratBrain, BotSimBrain):
+class Bot5(BotJonasStratBrain, BotSimBrain):
     def __init__(self): 
         super().__init__()
 
@@ -1095,3 +1098,30 @@ class Bot4(BotJonasStratBrain, BotSimBrain):
         else:
             print(f"Bot caught invalid move: {pMove}")
             return "stay"
+
+# Showcase of bot image processing   
+if __name__ == "__main__":
+    # Gets API Key
+    f1.client = f1.keyRead()
+    
+    # Uses OpenAI API to find what cards are present
+    playersRaw = f1.analyzeImage("../hand.jpg")
+    print(playersRaw)
+
+    bot = Bot1C()
+    # Turns the list of cards present to a dictionary in the format the bots use
+    players = bot.convertAnalyze(playersRaw)
+    print(players)
+
+    # Sets the bot's current cards to be the ones from above
+    bot.assignAnalyze(players)
+
+    # Calculates the optimal move from the image
+    for i in range(len(bot.getHands())):
+        bot.hIP(i)
+        try:
+            move = bot.makeMove()
+        except:
+            move = "Error"
+        
+        print(move)
