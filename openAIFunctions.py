@@ -94,5 +94,8 @@ def chat(input):
 
 
 if __name__ == "__main__":
+    # Gets API Key
     client = keyRead()
+
+    # Uses OpenAI API to find what cards are present
     print(analyzeImage("../hand2Crop.jpg"))
