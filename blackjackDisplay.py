@@ -2,15 +2,6 @@ from DisplayBase import *
 import openAIFunctions as f1
 
 # learn.adafruit.com/raspberry-pi-pygame-ui-basic
-try:
-    import pygame
-    pygame.init()
-
-    pygame.display.set_mode((1, 1))    
-    isKey= True
-except:
-    isKey = False
-    print("No Keyboard")
 print("current")
 # Lets the program be run on the Pi without a camera
 try:
@@ -24,6 +15,7 @@ except:
 
 else:
     isCam = True
+
 
 from time import sleep
 import time
@@ -124,17 +116,9 @@ def menuMegaMind(menu, loopCode):
                 rc["c"] = 0
                 rc = menuMind(menu, rc)
                 break
+            # python-evdev.readthedocs.io/en/latest/tutorial.html
 
-            if isKey:
-                try:
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYDOWN:
-                            if event.key == pygame.K_UP:
-                                aAllow = True
-                                print("Keyboard pressed up")
-                except:
-                    pass
-
+         
             if button_A.value:
                 aAllow = True
             # Returns the current row and column which corresponds to a menu option

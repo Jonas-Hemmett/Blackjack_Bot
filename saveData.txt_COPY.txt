@@ -1,9 +1,0 @@
--Save Data-
-Cost per game
-10
-
-Picture index:
-0
-
-Max number of pictures:
-5
