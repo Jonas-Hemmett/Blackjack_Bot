@@ -1,9 +1,9 @@
 # Safely launches the Blackjack Bot Pi program
 
-import blackjackDisplay
+import blackjackDisplay_Pi
 import os
-from DisplayBase import *
-import spinStable
+from DisplayBase_Pi import *
+import Spin
 
 if __name__ == "__main__":
     print("Launcher!")
@@ -16,14 +16,14 @@ if __name__ == "__main__":
         draw.rectangle((0, 0, width, height - 60), fill = (0, 0, 0))
         disp.image(image)
 
-        val = blackjackDisplay.menuMegaMind(menu, "")
+        val = blackjackDisplay_Pi.menuMegaMind(menu, "")
         print(val)
 
         if val == "Blackjack Bot":
-            blackjackDisplay.launch()
+            blackjackDisplay_Pi.launch()
 
         elif val == "Card Spin":
-            spinStable.launch()
+            Spin.doSpin(2)
 
         elif val == "Pi":
             try:

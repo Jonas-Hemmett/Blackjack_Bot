@@ -1,4 +1,4 @@
-from DisplayBase import *
+from DisplayBase_Pi import *
 import openAIFunctions as f1
 
 # learn.adafruit.com/raspberry-pi-pygame-ui-basic
@@ -719,6 +719,5 @@ if __name__ == "__main__":
     #     disp.image(image)
     
     #     counter += 1
-    print("1234")
     inputTest()
     # exit()

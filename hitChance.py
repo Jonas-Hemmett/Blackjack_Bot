@@ -1,4 +1,6 @@
 # My new strategy
+
+# Deck creation, modify this to change the deck
 deck = {}
 for i in range(1, 10):
     deck[i] = 4
@@ -6,7 +8,6 @@ for i in range(1, 10):
 deck[10] = 16
 
 def handSum(hand):
-    #TODO sort better, maybe
     hand.sort(reverse = True)
     valSum = 0
     for card in hand:

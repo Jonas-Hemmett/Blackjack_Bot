@@ -1,9 +1,56 @@
 # Blackjack Bot
 Blackjack bot is a Raspberry Pi based project which can participate in real world games of blackjack
 
-## PC Setup and Usage
+## Setup and Usage for PC
+### Module Installation 
+1. Run `pip install openai`
+2. Go to [platform.openai.com/](https://platform.openai.com) and setup account
+3. Go to [platform.openai.com/settings/organization/billing/overview](https://platform.openai.com/settings/organization/billing/overview) and add credit to balance. $1.00 should be enought to get started
+3. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), create an API key and copy it. Do not share this key with anyone
+4. Paste the API key onto the second line of [key.txt](key.txt). Do not share key.txt
+5. To test if everything is working run [openAIFunctions.py](openAIFunctions.py)
 
-## Raspberry Pi Setup and Usage
+## Programs
+### [blackjackGameSim.py](blackjackGameSim.py)
+Lets you play games locally and test out bots. Modifying the 'players' list lets you change the bots being used.
+## Setup and Usage for Raspberry Pi
+### Hardware setup
+1. Acquire a Raspberry Pi 4
+2. Acquire a Raspberry Pi Camera Module V2-8 Megapixel,1080p (RPI-CAM-V2)
+3. Acquire an Adafruit 1.3" Color TFT Bonnet
+4. Put the Pi into an Argon NEO Raspberry Pi 4 Case, take off the lid
+5. Copy files onto the Pi
+6. Lasercut [Layout.svg](Housing/Layout.svg) out of 1/8" acrylic using the following settings 
+    * RGB(0, 0, 255): Do not cut or engrave
+    * RGB (255, 0, 0): Cut
+    * RGB (0, 175, 239): Deep engrave
+    * RGB(236, 38, 143): Medium engrave
+    * RGB(255, 242, 18): Shallow engrave
+7. Using [Bot-1600.jpg](Housing/Bot-1600.jpg) as a reference, assemble the Pi
+    1. Use P6, P7, and P9 to assemble a display stand as pictured in [Stand.jpg](Housing/Stand.jpg) 
+    2. P8 serves as a keychain
+    3. Glue P2 onto P5, the engraving should be facing out
+    4. Glue P3 onto P1
+    5. Glue P4 onto P1
+    6. Bolt P2 between P3 and P4 (2.5 hardware is used)
+    7. Bolt the top 2 holes of the housing onto the top 2 holes of the Color TFT Bonnet
+    8. Bolt the camera module into P5 and attach the camera ribbon
+    9. Weave the camera ribbon  through the slots in the hosuing
+    10. Plug the camera into the Pi
+    11. Bolt the bottom 2 holes of the housing onto the Argon Case
+
+
+
+
+### Module Installation 
+1. Run `pip install openai`
+2. Go to [platform.openai.com/](https://platform.openai.com) and setup account
+3. Go to [platform.openai.com/settings/organization/billing/overview](https://platform.openai.com/settings/organization/billing/overview) and add credit to balance. $1.00 should be enought to get started
+3. Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), create an API key and copy it. Do not share this key with anyone
+4. Paste the API key onto the second line of [key.txt](key.txt). Do not share key.txt
+5. Run `sudo apt install -y python3-picamera2`
+6. Run `pip install pillow`
+
 ## About this Project
 ### Why?
 I wanted to combine my interest in card games with computer scienc to create a more efficient playstyle. I was also interested in the practical applications of AI and this was a good opportunity to use it. I started this project in CS 2210: Computer Organization and I've continued to expand it independently using concepts from CS 3240: Algorithm Design & Analysis and CS 2510: Intro Artificial Intelligence. 

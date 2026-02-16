@@ -98,4 +98,4 @@ if __name__ == "__main__":
     client = keyRead()
 
     # Uses OpenAI API to find what cards are present
-    print(analyzeImage("CardPhoto"))
+    print(analyzeImage("CardPhoto.jpg"))

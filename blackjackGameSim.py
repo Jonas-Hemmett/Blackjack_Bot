@@ -305,6 +305,7 @@ class GameBotSim(GameSim):
 #Fix gethands to show all hands or one hand
 
 if __name__ == "__main__":
+    # Modify this to change the bots used
     players = [pl.User(), b1.Bot5(), pl.BotDealer()]
 
     printOutput = True
