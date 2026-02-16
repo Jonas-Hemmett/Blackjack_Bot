@@ -22,7 +22,7 @@ Handles image recognition. Running this program will scan the cards in a saved t
 ### [bots.py](bots.py)
 Sets up bot logic. Running this program will scan the images in a card and determine the best move
 
-### [playerBase.py]
+### [playerBase.py](playerBase.py)
 Stores basic class info for players
 
 ### [blackjackGameSim.py](blackjackGameSim.py)
