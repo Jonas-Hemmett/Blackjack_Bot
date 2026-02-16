@@ -5,7 +5,7 @@ import io
 def keyRead():
     try:
         try:
-            with open("../key.txt", "r") as file:
+            with open("key.txt", "r") as file:
                 next(file)
                 rawKey = file.read().strip()
                 
