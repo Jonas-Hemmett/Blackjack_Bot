@@ -1,6 +1,9 @@
 Jonas Hemmett
 jonasgordonhemmett@gmail.com - johannes.hemmett@uvm.edu
 
+# Project Breakdown
+
+
 # Custom Housing
 In order to combine features like a camera, screen, and buttons with  the Raspberry Pi, I made a custom housing that fits all of them. I used CAD (Computer aided design) to design it on my computer.  I created sketches of the parts, combining dimensions of the Pi with the ideas I had in my head. Designing the custom housing took many iterations to get right as I had to make sure all of the parts fit together, many of the intermediate versions were made of paper while I worked with the FabLab to laser cut the final design out of acrylic. My favorite feature is the angle gauge on the side of the camera mount. Other features include engraved text, cable management for the camera, recessing the camera and buttons for increased durability, and covering the exposed circuitry.
 
