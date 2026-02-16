@@ -1,28 +1,5 @@
 Jonas Hemmett
 jonasgordonhemmett@gmail.com - johannes.hemmett@uvm.edu
-# Game Rules
-The goal of blackjack is to get a higher combination of card values than the dealer without going bust (over 21). Number cards are worth their value, face cards count as 10, and aces are worth 1 or 11 depending on if they would make you go bust. If you get 21 as your starting hand (Blackjack) you win a payout of 150%. Other wins payout 100%. Players go clockwise and the dealer plays last.
-
-Hitting deals you another card, this is repeated as many times as you like.
-
-Standing ends your turn for the game.
-
-Splitting can only be done as your first move, it lets you play your two cards as separate hands, but only if they have the same value.
-
-Doubling down can only be done as your first move, it deals you another card then ends your turn.
-		
-Surrendering can only be done as your first move, it lets you 50% your original bet back and removes you from the round.
-
-# Why?
-I wanted to combine my interest in card games with computer scienc to create a more efficient playstyle. I was also interested in the practical applications of AI and this was a good opportunity to use it. I started this project in CS 2210: Computer Organization and I've continued to expand it independently using concepts from CS 3240: Algorithm Design & Analysis and CS 2510: Intro Artificial Intelligence. 
-
-The bot itself is designed solely for entertainment, I play cards with my friends fairly frequently so it's always fun when the blackjack bot gets to make an appearance.
-
-# About Me
-I’m currently a Computer Science major at the University of Vermont. I love creative problem solving and exploring how technology can bring my ideas to life. I enjoy building projects that combine code, CAD, and hands-on experimentation to create practical and creative solutions.
-
-Outside of school, I always try to stay busy. I like skiing, leatherworking & fashion design, and playing games, whether they be video, card, or board.
-
 
 # Custom Housing
 In order to combine features like a camera, screen, and buttons with  the Raspberry Pi, I made a custom housing that fits all of them. I used CAD (Computer aided design) to design it on my computer.  I created sketches of the parts, combining dimensions of the Pi with the ideas I had in my head. Designing the custom housing took many iterations to get right as I had to make sure all of the parts fit together, many of the intermediate versions were made of paper while I worked with the FabLab to laser cut the final design out of acrylic. My favorite feature is the angle gauge on the side of the camera mount. Other features include engraved text, cable management for the camera, recessing the camera and buttons for increased durability, and covering the exposed circuitry.
@@ -66,4 +43,8 @@ Medium deck: Precompute games with my improved strategy and store the data in a 
 
 Small deck: Simulate different game outcomes in real time.
 
+# Why?
+I wanted to combine my interest in card games with computer scienc to create a more efficient playstyle. I was also interested in the practical applications of AI and this was a good opportunity to use it. I started this project in CS 2210: Computer Organization and I've continued to expand it independently using concepts from CS 3240: Algorithm Design & Analysis and CS 2510: Intro Artificial Intelligence. 
+
+The bot itself is designed solely for entertainment, I play cards with my friends fairly frequently so it's always fun when the blackjack bot gets to make an appearance.
 
