@@ -1,5 +1,6 @@
-# Blackjack Bot
+# [Blackjack Bot](https://jhemmett.w3.uvm.edu/Blackjack_Bot/)
 Blackjack bot is a Raspberry Pi based project which can participate in real world games of blackjack.
+
 
 ## Setup and Usage for PC
 ### Module Installation 
