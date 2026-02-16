@@ -1,5 +1,5 @@
 # Blackjack Bot
-Blackjack bot is a Raspberry Pi based project which can participate in real world games of blackjack
+Blackjack bot is a Raspberry Pi based project which can participate in real world games of blackjack.
 
 ## Setup and Usage for PC
 ### Module Installation 
@@ -13,20 +13,20 @@ Blackjack bot is a Raspberry Pi based project which can participate in real worl
 ## Programs
 
 ### [hitChance.py](hitChange.py)
-Expectiminimax based game algorithm for determing the best move
+Expectiminimax based game algorithm for determing the best move.
 
 ### [OpenAIFunctions.py](OpenAIFunctions.py)
-Handles image recognition. Running this program will scan the cards in a saved test image
+Handles image recognition. Running this program will scan the cards in a saved test image.
 
 
 ### [bots.py](bots.py)
-Sets up bot logic. Running this program will scan the images in a card and determine the best move
+Sets up bot logic. Running this program will scan the images in a card and determine the best move.
 
 ### [playerBase.py](playerBase.py)
 Stores basic class info for players
 
 ### [blackjackGameSim.py](blackjackGameSim.py)
-Lets you play games locally and test out bots. Modifying the 'players' list lets you change the bots being used
+Lets you play games locally and test out bots. Modifying the 'players' list lets you change the bots being used.
 
 ## Setup and Usage for Raspberry Pi
 ### Hardware setup
@@ -56,19 +56,19 @@ Lets you play games locally and test out bots. Modifying the 'players' list lets
 
 ## Programs
 ### [camTest_Pi.py](camTest_Pi.py)
-Tests the Pi's camera
+Tests the Pi's camera.
 
 ### [DisplayBase_Pi.py](DisplayBase_Pi.py)
-Starter code from Adafruit which runs the display and buttons
+Starter code from Adafruit which runs the display and buttons.
 
 ### [dispBot_Pi.py](dispBot_Pi.py)
-Bot designed to run on the Pi
+Bot designed to run on the Pi.
 
 ### [blackjackDisplay_Pi.py](blackjackDisplay_Pi.py)
-Main program for Blackjack Bot
+Main program for Blackjack Bot.
 
 ### [blackjackLauncher_Pi.py](blackjackLauncher_Pi.py)
-Safely launches Python programs on the Pi
+Safely launches Python programs on the Pi.
 
 
 ### Module Installation 
