@@ -1,4 +1,9 @@
-import openAIFunctions as f1
+# Bot programs
+
+try:
+    import openAIFunctions as f1
+except:
+    print("noAI")
 import playerBase as pl
 import copy
 
@@ -152,6 +157,7 @@ class BotBrain(pl.Player):
     def __init__(self):
         pl.Player.__init__(self)
         self.players = {"u": BotDeck(), "d": BotDeck()}
+        self.betAmount = 0
     
     # def buyInAmount(self, amount):
     #     if self.bankroll >= amount:
@@ -174,6 +180,7 @@ class BotBrain(pl.Player):
     def reset(self):
         for p in self.players:
             self.players[p].clear()
+        self.payout = 1
 
     # Goes to the bot's card index, if it is out of range more cards are added
     def hIP(self, num):
@@ -216,11 +223,15 @@ class BotBrain(pl.Player):
         # print(f"bankroll: {self.bankroll}. Cost: {self.cost}")
         if self.bankroll >= self.cost:
             self.bankroll -= self.cost
+
+            self.betAmount = self.cost
             return self.cost
         
         elif self.bankroll == -1:
+            self.betAmount = self.cost
             return self.cost
         else: 
+            self.betAmount = 0
             return 0
     
     def playRound(self):
@@ -520,7 +531,7 @@ class BotIrlBrain(BotBrain):
                 break
            
             print(f"recommended bet: {self.players['p'].getBet()}")
-            self.buyInAmount(int(input("Bet Amount:")))
+            self.betAmount(int(input("Bet Amount:")))
 
 
             while True:
@@ -724,17 +735,29 @@ class BotCountStratBrain(BotBasicStratBrain):
         bet = round(self.cost * bet, BROUND)
 
         if self.bankroll == -1:
+            self.betAmount = bet
             return bet
         
         else:
             if bet > self.bankroll:
                 if self.cost <= self.bankroll:
+
                     self.bankroll -= self.cost
+                    self.betAmount = self.cost
+
+
                     return self.cost
                 else:
+                    self.betAmount = 0
                     return 0
             else:
+                print(f"Pre bankroll: {self.bankroll} bet: {self.betAmount}")
+
                 self.bankroll -= bet
+
+                self.betAmount = bet
+                print(f"bankroll: {self.bankroll} bet: {self.betAmount}")
+
                 return bet
 
 
@@ -876,7 +899,7 @@ class BotJonasStratBrain(BotCountStratBrain):
                 deckNew[card] -= 1
                 userHandNew = userHand + [card]
                 ev += weight * self.stand(userHandNew, dealerHand, deckNew, memoVal)
-
+        
         return 2 * ev
 
     def dealerScore(self, userHand, dealerHand, deck, memoVal):
@@ -1048,7 +1071,7 @@ class Bot3(BotCountStratBrain, BotSimBrain):
             return "stay"
 
 
-class Bot4(BotJonasStratBrain, BotSimBrain):
+class Bot5(BotJonasStratBrain, BotSimBrain):
     def __init__(self): 
         super().__init__()
 
@@ -1063,7 +1086,9 @@ class Bot4(BotJonasStratBrain, BotSimBrain):
     #             if p != "p":
     #                 self.players["p"].addHandOld(ps[p])
     #     self.moves = moves
-
+    
+    def buyIn(self):
+        return BotCountStratBrain.buyIn(self)
     def makeMove(self):
         pMove = BotJonasStratBrain.makeMove(self)
 
@@ -1073,3 +1098,30 @@ class Bot4(BotJonasStratBrain, BotSimBrain):
         else:
             print(f"Bot caught invalid move: {pMove}")
             return "stay"
+
+# Showcase of bot image processing   
+if __name__ == "__main__":
+    # Gets API Key
+    f1.client = f1.keyRead()
+    
+    # Uses OpenAI API to find what cards are present
+    playersRaw = f1.analyzeImage("../hand.jpg")
+    print(playersRaw)
+
+    bot = Bot1C()
+    # Turns the list of cards present to a dictionary in the format the bots use
+    players = bot.convertAnalyze(playersRaw)
+    print(players)
+
+    # Sets the bot's current cards to be the ones from above
+    bot.assignAnalyze(players)
+
+    # Calculates the optimal move from the image
+    for i in range(len(bot.getHands())):
+        bot.hIP(i)
+        try:
+            move = bot.makeMove()
+        except:
+            move = "Error"
+        
+        print(move)

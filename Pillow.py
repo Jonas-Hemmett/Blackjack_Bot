@@ -1,3 +1,4 @@
+# Basic pillow test
 from PIL import Image, ImageDraw, ImageFont
 width = 400
 height = width

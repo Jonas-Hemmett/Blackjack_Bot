@@ -1,3 +1,5 @@
+# Tests computer vision
+
 from picamera2 import Picamera2
 from DisplayBase import *
 import openAIFunctions as f1
